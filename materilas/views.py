@@ -8,17 +8,15 @@ from materilas.permissions import IsOwner, IsModerator
 class CourseViewSet(viewsets.ModelViewSet):
     serializer_class = CourseSerializer
     queryset = Course.objects.all()
-    permission_classes = [IsAuthenticated, IsOwner | IsModerator]
+    # permission_classes = [IsAuthenticated, IsOwner | IsModerator]
 
     def create(self, request, *args, **kwargs):
-        # Checking if a user is a moderator
         is_moderator = request.user.groups.filter(name='Moderators').exists()
         if is_moderator:
             return self.permission_denied(request)
         return super().create(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
-        # Checking if a user is a moderator
         is_moderator = request.user.groups.filter(name='Moderators').exists()
         if is_moderator:
             return self.permission_denied(request)
@@ -29,6 +27,11 @@ class LessonCreateAPIView(generics.CreateAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
     permission_classes = [IsAuthenticated, IsOwner]
+
+    def perform_create(self, serializer):
+        new_lesson = serializer.save()
+        new_lesson.owner = self.request.user
+        new_lesson.save()
 
 
 class LessonListAPIView(generics.ListAPIView):

@@ -2,7 +2,9 @@ from rest_framework.filters import OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
 from django.contrib.auth.hashers import make_password
+from rest_framework.permissions import IsAuthenticated
 
+from materilas.permissions import IsOwner, IsModerator
 from users.models import User, Payments
 from users.serializers import UserSerializer, PaymentsSerializer
 
@@ -43,3 +45,4 @@ class PaymentsListApiView(generics.ListAPIView):
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_fields = ('paid_course', 'paid_lesson', 'payment_method')
     ordering_fields = ('date_of_payment',)
+    permission_classes = [IsAuthenticated, IsOwner | IsModerator]
