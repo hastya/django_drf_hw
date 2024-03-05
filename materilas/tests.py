@@ -9,10 +9,14 @@ from users.models import User
 class LessonTestCase(APITestCase):
     def setUp(self) -> None:
         # Создание пользователя
-        self.user = User.objects.create_user(
-            username='testuser',
-            password='testpassword'
+        self.client = APIClient()
+        self.user = User.objects.create(
+            email="test@user1.com",
+            is_superuser=True,
+            is_staff=True
         )
+        self.client.force_authenticate(user=self.user)
+
         # Создание курса
         self.course = Course.objects.create(
             name='test',
@@ -41,24 +45,16 @@ class CourseSubscriptionTestCase(APITestCase):
 
     def setUp(self) -> None:
         # Создание пользователя
-        self.user = User.objects.create_user(
-            username='testuser',
-            password='testpassword'
+        self.client = APIClient()
+        self.user = User.objects.create(
+            email="test@user2.com",
+            is_superuser=True,
+            is_staff=True
         )
         self.client.force_authenticate(user=self.user)
 
         # Создание курса
-        self.course = Course.objects.create(
-            name="test_course",
-            description='second course',
-            owner=self.user
-        )
-
-        # Создание подписки
-        self.subscribe = CourseSubscription.objects.create(
-            user=self.user,
-            course=self.course,
-        )
+        Course.objects.create(name='test2')
 
     def test_subscribe_to_course(self):
         """Тест проверки подписки на курс"""
@@ -69,7 +65,7 @@ class CourseSubscriptionTestCase(APITestCase):
         }
 
         response = self.client.post(
-            reverse('materilas:course-subscription'),
+            '/courses/subscription/',
             data=data
         )
 
