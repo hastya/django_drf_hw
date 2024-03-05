@@ -41,7 +41,6 @@ class CourseSubscriptionTestCase(APITestCase):
 
     def setUp(self) -> None:
         # Создание пользователя
-        self.client = APIClient()
         self.user = User.objects.create_user(
             username='testuser',
             password='testpassword'
@@ -55,7 +54,7 @@ class CourseSubscriptionTestCase(APITestCase):
             owner=self.user
         )
 
-        # Создаем подписки
+        # Создание подписки
         self.subscribe = CourseSubscription.objects.create(
             user=self.user,
             course=self.course,
