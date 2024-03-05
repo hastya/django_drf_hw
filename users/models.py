@@ -14,8 +14,8 @@ class UserRoles(models.TextChoices):
 
 class User(AbstractUser):
     username = None
-    first_name = models.CharField(max_length=50, verbose_name='имя')
-    last_name = models.CharField(max_length=50, verbose_name='фамилия')
+    first_name = models.CharField(max_length=50, verbose_name='имя', **NULLABLE)
+    last_name = models.CharField(max_length=50, verbose_name='фамилия', **NULLABLE)
     email = models.EmailField(unique=True, verbose_name='почта')
     phone = models.CharField(max_length=50, verbose_name='телефон', **NULLABLE)
     city = models.CharField(max_length=50, verbose_name='город', **NULLABLE)
