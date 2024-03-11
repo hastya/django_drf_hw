@@ -2,7 +2,7 @@ from rest_framework import serializers
 from users.models import User, Payments
 
 
-class PaymentsSerializer(serializers.ModelSerializer):
+class PaymentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Payments
@@ -12,7 +12,7 @@ class PaymentsSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
 
     date_joined = serializers.DateTimeField(format="%Y-%m-%d")
-    history_payments = PaymentsSerializer(many=True, read_only=True, source='payments_set')
+    history_payments = PaymentSerializer(many=True, read_only=True, source='payments_set')
 
     class Meta:
         model = User
