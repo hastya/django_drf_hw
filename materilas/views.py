@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from rest_framework import viewsets, generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -9,6 +10,7 @@ from materilas.serializers import CourseSerializer, LessonSerializer, CourseSubs
 from rest_framework.permissions import IsAuthenticated
 from materilas.permissions import IsOwner, IsModerator
 
+from .tasks import update_course_notification
 
 class CourseViewSet(viewsets.ModelViewSet):
     serializer_class = CourseSerializer
@@ -27,6 +29,13 @@ class CourseViewSet(viewsets.ModelViewSet):
         if is_moderator:
             return self.permission_denied(request)
         return super().destroy(request, *args, **kwargs)
+
+    def perform_update(self, serializer):
+        course = serializer.save()
+        course_id = course.id
+        course.last_update = timezone.now()
+
+        update_course_notification.delay(course_id)
 
 
 class LessonCreateAPIView(generics.CreateAPIView):

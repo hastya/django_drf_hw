@@ -12,6 +12,7 @@ class Course(models.Model):
     # owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='courses', default=None, **NULLABLE, verbose_name='владелец')
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, **NULLABLE, verbose_name='владелец')
     url = models.URLField(verbose_name='url', **NULLABLE)
+    last_update = models.DateTimeField(auto_now=True, verbose_name='последнее обновление')
 
     class Meta:
         verbose_name = 'курс'
